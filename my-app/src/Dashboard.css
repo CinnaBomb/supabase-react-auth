@@ -1,0 +1,82 @@
+.sticky-note {
+    background: #fff176;
+    /* soft yellow */
+    width: 200px;
+    min-height: 150px;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', sans-serif;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sticky-note::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    background: #e74c3c; /* red pin */
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+  
+
+.note-content {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.3;
+    flex-grow: 1;
+}
+
+.note-meta {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.pin-circle {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 2;
+    cursor: pointer;
+  }
+  
+  .pin-dropdown {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    z-index: 9999;
+    min-width: 100px;
+  }
+  
+  .pin-dropdown li {
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: #333;
+  }
+  
+  .pin-dropdown li:hover {
+    background-color: #f0f0f0;
+  }
+
+  
+  

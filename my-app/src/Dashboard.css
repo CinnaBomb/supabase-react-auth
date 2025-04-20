@@ -26,7 +26,6 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     z-index: 2;
 }
-  
 
 .note-content {
     font-size: 1rem;
@@ -65,7 +64,11 @@
     position: absolute;
     z-index: 9999;
     min-width: 100px;
+  
+    top: var(--pin-dropdown-top, 0);
+    left: var(--pin-dropdown-left, 0);
   }
+
   
   .pin-dropdown li {
     padding: 6px 12px;
@@ -78,5 +81,26 @@
     background-color: #f0f0f0;
   }
 
+  .notes-grid {
+    position: relative;
+    width: 100%;
+    height: 1000px; /* or calculate dynamically later */
+  }
+  
+  .notes-grid {
+    position: relative;
+    width: 100%;
+    background: #f9f9f9;
+    overflow: visible; /* ✅ don't clip notes */
+    min-height: 1200px; /* temporary */
+  }
+  
+  
+
+  .notes-chaos {
+    position: relative;
+    width: 100%;
+    height: 800px; /* or make dynamic later */
+  }
   
   

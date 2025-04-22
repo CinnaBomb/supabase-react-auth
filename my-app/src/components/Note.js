@@ -1,58 +1,57 @@
-import Draggable from 'react-draggable';
+import { useDraggable } from '@dnd-kit/core';
 import PinSelector from './PinSelector';
 
 export default function Note({
   note,
-  refresh,
+  layoutMode,
+  isOverlay = false,
+  draggable = false,
   updateNotePin,
   isPinMenuOpen,
   openPinMenuFor,
   closePinMenu,
-  layoutMode,
-  onDragStop,
-  dragListeners,
-  dragAttributes,
-  dragRef,
+  dndAttributes,
+  dndListeners,
 }) {
-  const chaosMode = layoutMode === 'chaos';
+  // Only run useDraggable if no external props are provided (grid mode)
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+  } = useDraggable({ id: note.id });
 
-  const defaultX = note.chaos_x ?? 0;
-  const defaultY = note.chaos_y ?? 0;
+  const activeAttributes = dndAttributes ?? attributes;
+  const activeListeners = dndListeners ?? listeners;
+  const activeRef = draggable ? setNodeRef : null;
 
-  const content = (
-    <div className="sticky-note">
-      <PinSelector
-        noteId={note.id}
-        currentPin={note.pin_type}
-        updateLocalPin={updateNotePin}
-        isOpen={isPinMenuOpen}
-        open={() => openPinMenuFor(note.id)}
-        close={closePinMenu}
-      />
-      <div className="note-content">{note.content}</div>
-      <div className="note-meta">
-        {note.currency ? `💰 ${note.currency}` : ''}
-        {note.prize ? ` 🎁 ${note.prize}` : ''}
+  return (
+    <div
+      className="sticky-note"
+      ref={activeRef}
+      {...(draggable ? activeAttributes : {})}
+    >
+<PinSelector
+  noteId={note.id}
+  currentPin={note.pin_type}
+  updateLocalPin={updateNotePin}
+  isPinMenuOpen={isPinMenuOpen}
+  openPinMenuFor={openPinMenuFor}
+  closePinMenu={closePinMenu}
+  dragListeners={dndListeners}
+  dragAttributes={dndAttributes}
+/>
+
+
+      <div
+        className="note-drag-handle"
+        {...(draggable ? activeListeners : {})}
+      >
+        <div className="note-content">{note.content}</div>
+        <div className="note-meta">
+          {note.currency && `💰 ${note.currency}`}
+          {note.prize && ` 🎁 ${note.prize}`}
+        </div>
       </div>
     </div>
   );
-
-  return chaosMode ? (
-    <Draggable
-      defaultPosition={{ x: defaultX, y: defaultY }}
-      onStop={(_, data) => onDragStop(note.id, data.x, data.y)}
-    >
-      <div style={{ position: 'absolute' }}>{content}</div>
-    </Draggable>
-  ) : (
-    <div
-      ref={dragRef}
-      {...dragAttributes}
-      {...dragListeners}
-      style={{ width: 200, height: 150, backgroundColor: 'lightblue', border: '2px dashed #333' }}
-    >
-      {note.id}
-    </div>
-  );
-  
 }

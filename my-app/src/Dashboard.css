@@ -13,20 +13,6 @@
     justify-content: space-between;
 }
 
-.sticky-note::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 16px;
-    background: #e74c3c; /* red pin */
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    z-index: 2;
-}
-
 .note-content {
     font-size: 1rem;
     font-weight: 500;
@@ -45,8 +31,8 @@
     top: -8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     z-index: 2;
@@ -89,10 +75,37 @@
   
   .notes-grid {
     position: relative;
-    width: 100%;
-    background: #f9f9f9;
-    overflow: visible; /* ✅ don't clip notes */
-    min-height: 1200px; /* temporary */
+    background-color: #f9f9f9;
+    background-image: repeating-linear-gradient(
+      to right,
+      #ddd 0px,
+      #ddd 1px,
+      transparent 1px,
+      transparent 220px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      #ddd 0px,
+      #ddd 1px,
+      transparent 1px,
+      transparent 220px
+    );
+    background-size: 220px 220px;
+    transition: background-color 0.2s;
+  }
+  
+  .notes-grid.dragging {
+    background-color: #eef6ff;
+  }
+  
+  .note-drag-handle {
+    cursor: grab;
+  }
+  .pin-circle {
+    cursor: grab;
+  }
+  .pin-circle:active {
+    cursor: grabbing;
   }
   
   

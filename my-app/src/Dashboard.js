@@ -35,6 +35,9 @@ export default function Dashboard({ session }) {
   const [layoutMode, setLayoutMode] = useState('grid');
   const [originalGridOrder, setOriginalGridOrder] = useState([]);
   const sensors = useSensors(useSensor(PointerSensor));
+  const [gridColumns, setGridColumns] = useState(4);
+
+
 
   function handleGridDragEnd(event) {
     const { active, over } = event;
@@ -102,7 +105,7 @@ export default function Dashboard({ session }) {
 
     setNotes(sortedNotes);
     setOriginalGridOrder([]); // Reset for next chaos switch
-  }, [layoutMode]);
+  }, [layoutMode, notes, originalGridOrder]);
 
 
   function updateNotePin(noteId, newPin) {
@@ -177,7 +180,16 @@ export default function Dashboard({ session }) {
       .order('grid_index', { ascending: true });
 
     if (data) {
-      setNotes(data);
+      setNotes(
+        data.map((n, i) => ({
+          ...n,
+          grid_index: n.grid_index ?? i,
+          chaos_x: n.chaos_x ?? null,
+          chaos_y: n.chaos_y ?? null
+        }))
+      );
+      
+
     }
   }
 
@@ -245,6 +257,15 @@ export default function Dashboard({ session }) {
         my="md"
       />
 
+      <NumberInput
+        label="Grid Columns"
+        value={gridColumns}
+        onChange={setGridColumns}
+        min={1}
+        max={12}
+      />
+
+
       <Stack spacing="xs">
         <TextInput
           label="Note Content"
@@ -277,6 +298,7 @@ export default function Dashboard({ session }) {
           openPinMenuForNote={openPinMenuForNote}
           setOpenPinMenuForNote={setOpenPinMenuForNote}
           setNotes={setNotes}
+          gridColumns={gridColumns}
         />
       ) : (
         <NotesChaos

@@ -1,4 +1,10 @@
-import { DndContext, useSensor, useSensors, PointerSensor, useDraggable } from '@dnd-kit/core';
+import {
+  DndContext,
+  useSensor,
+  useSensors,
+  PointerSensor,
+  useDraggable,
+} from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import Note from './Note';
 
@@ -12,26 +18,31 @@ export default function NotesChaos({
   const sensors = useSensors(useSensor(PointerSensor));
 
   function ChaosDraggable({ note }) {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: note.id });
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+      id: note.id,
+    });
 
     const style = {
-      position: 'absolute',
-      top: typeof note.chaos_y === 'number' ? note.chaos_y : 0,
-      left: typeof note.chaos_x === 'number' ? note.chaos_x : 0,
+      top: typeof note.chaos_y === 'number' ? `${note.chaos_y}px` : '0px',
+      left: typeof note.chaos_x === 'number' ? `${note.chaos_x}px` : '0px',
       transform: CSS.Translate.toString(transform),
-      width: '200px',
-      touchAction: 'none',
       zIndex: openPinMenuForNote === note.id ? 2 : 1,
     };
 
     return (
-<div ref={setNodeRef} style={style}>
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="chaos-note-wrapper"
+        {...attributes}
+        {...listeners}
+      >
         <Note
           note={note}
           layoutMode="chaos"
           updateNotePin={updateNotePin}
-          isPinMenuOpen={openPinMenuForNote === note.id} // ✅ this is the state value
-          openPinMenuFor={setOpenPinMenuForNote}        // ✅ this is the setter
+          isPinMenuOpen={openPinMenuForNote === note.id}
+          openPinMenuFor={setOpenPinMenuForNote}
           closePinMenu={() => setOpenPinMenuForNote(null)}
           draggable
           dndAttributes={attributes}

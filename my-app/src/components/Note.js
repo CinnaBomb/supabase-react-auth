@@ -13,7 +13,6 @@ export default function Note({
   dndAttributes,
   dndListeners,
 }) {
-  // Only run useDraggable if no external props are provided (grid mode)
   const {
     attributes,
     listeners,
@@ -30,17 +29,14 @@ export default function Note({
       ref={activeRef}
       {...(draggable ? activeAttributes : {})}
     >
-<PinSelector
-  noteId={note.id}
-  currentPin={note.pin_type}
-  updateLocalPin={updateNotePin}
-  isPinMenuOpen={isPinMenuOpen}
-  openPinMenuFor={openPinMenuFor}
-  closePinMenu={closePinMenu}
-  dragListeners={dndListeners}
-  dragAttributes={dndAttributes}
-/>
-
+      <PinSelector
+        noteId={note.id}
+        currentPin={note.pin_type}
+        updateLocalPin={updateNotePin}
+        isPinMenuOpen={isPinMenuOpen}
+        openPinMenuFor={openPinMenuFor}
+        closePinMenu={closePinMenu}
+      />
 
       <div
         className="note-drag-handle"
@@ -52,6 +48,7 @@ export default function Note({
           {note.prize && ` 🎁 ${note.prize}`}
         </div>
       </div>
+
     </div>
   );
 }

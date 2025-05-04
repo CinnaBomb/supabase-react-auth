@@ -1,119 +1,204 @@
-.sticky-note {
-    background: #fff176;
-    /* soft yellow */
-    width: 200px;
-    min-height: 150px;
-    padding: 1rem;
-    border-radius: 10px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
-    font-family: 'Segoe UI', sans-serif;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.note-content {
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.3;
-    flex-grow: 1;
-}
-
-.note-meta {
-    font-size: 0.9rem;
-    color: #555;
-    margin-top: 0.5rem;
+/* -----------------------------------
+   📌 Pin Styles
+----------------------------------- */
+.pin-wrapper {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .pin-circle {
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    z-index: 2;
-    cursor: pointer;
-  }
-  
-  .pin-dropdown {
-    list-style: none;
-    margin: 0;
-    padding: 4px 0;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    z-index: 9999;
-    min-width: 100px;
-  
-    top: var(--pin-dropdown-top, 0);
-    left: var(--pin-dropdown-left, 0);
-  }
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  cursor: pointer;
+  position: relative;
+}
 
-  
-  .pin-dropdown li {
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    color: #333;
-  }
-  
-  .pin-dropdown li:hover {
-    background-color: #f0f0f0;
-  }
+.pin-circle:active {
+  cursor: grabbing;
+}
 
-  .notes-grid {
-    position: relative;
-    width: 100%;
-    height: 1000px; /* or calculate dynamically later */
-  }
-  
-  .notes-grid {
-    position: relative;
-    background-color: #f9f9f9;
-    background-image: repeating-linear-gradient(
-      to right,
-      #ddd 0px,
-      #ddd 1px,
-      transparent 1px,
-      transparent 220px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      #ddd 0px,
-      #ddd 1px,
-      transparent 1px,
-      transparent 220px
-    );
-    background-size: 220px 220px;
-    transition: background-color 0.2s;
-  }
-  
-  .notes-grid.dragging {
-    background-color: #eef6ff;
-  }
-  
-  .note-drag-handle {
-    cursor: grab;
-  }
-  .pin-circle {
-    cursor: grab;
-  }
-  .pin-circle:active {
-    cursor: grabbing;
-  }
-  
-  
+.pin-dropdown {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  z-index: 9999;
+  min-width: 100px;
+  top: var(--pin-dropdown-top, 0);
+  left: var(--pin-dropdown-left, 0);
+}
 
-  .notes-chaos {
-    position: relative;
-    width: 100%;
-    height: 800px; /* or make dynamic later */
-  }
-  
-  
+.pin-dropdown li {
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: #333;
+}
+
+.pin-dropdown li:hover {
+  background-color: #f0f0f0;
+}
+
+.pin-grab-area {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+.pin-grab-area:active {
+  cursor: grabbing;
+}
+
+.pin-image,
+.pin-color {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+}
+
+.pin-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #000;
+}
+
+.pin-color-option {
+  color: #fff;
+}
+
+.pin-preview {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+}
+
+/* -----------------------------------
+   🗒️ Note Styles
+----------------------------------- */
+.sticky-note {
+  background: #fff176; /* soft yellow */
+  width: 180px;
+  min-height: 180px;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  font-family: 'Segoe UI', sans-serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.note-content {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  flex-grow: 1;
+}
+
+.note-meta {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+.note-drag-handle {
+  cursor: grab;
+}
+.note-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* -----------------------------------
+   ➕ Note Creation UI
+----------------------------------- */
+.note-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.note-add-button {
+  background-color: #339af0;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.note-add-button:hover {
+  background-color: #1c7ed6;
+}
+
+/* -----------------------------------
+   🗺️ Grid Mode
+----------------------------------- */
+.notes-grid {
+  position: relative;
+  width: 100%;
+  height: 1000px; /* or calculate dynamically later */
+  background-color: #f9f9f9;
+  background-image: repeating-linear-gradient(
+    to right,
+    #ddd 0px,
+    #ddd 1px,
+    transparent 1px,
+    transparent 220px
+  ),
+  repeating-linear-gradient(
+    to bottom,
+    #ddd 0px,
+    #ddd 1px,
+    transparent 1px,
+    transparent 220px
+  );
+  background-size: 220px 220px;
+  transition: background-color 0.2s;
+}
+
+.notes-grid.dragging {
+  background-color: #eef6ff;
+}
+
+/* -----------------------------------
+   🌀 Chaos Mode
+----------------------------------- */
+.notes-chaos {
+  position: relative;
+  width: 100%;
+  height: 800px; /* or make dynamic later */
+}
+
+.chaos-note-wrapper {
+  position: absolute;
+  width: 200px;
+  touch-action: none;
+  transition: transform 0.2s ease;
+}
+
+/* -----------------------------------
+   🔀 Sortable Note
+----------------------------------- */
+.sortable-note {
+  position: absolute;
+  width: 200px;
+  touch-action: none;
+  z-index: 1;
+}

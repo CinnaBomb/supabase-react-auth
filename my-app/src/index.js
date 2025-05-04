@@ -1,19 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { MantineProvider } from '@mantine/core';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
+// Optional: Create a custom theme
+const theme = extendTheme({
+  colors: {
+    brand: {
+      100: "#f7fafc",
+      900: "#1a202c",
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <App />
-    </MantineProvider>
+  <ErrorBoundary>
+  <ChakraProvider theme={theme}>
+    <App />
+    
+  </ChakraProvider>
+  </ErrorBoundary>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+function ErrorBoundary({ children }) {
+  console.log('ErrorBoundary');
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      {children}
+    </React.Suspense>
+  );
+}

@@ -6,6 +6,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import Dashboard from './Dashboard';
 
 function App() {
+  console.log('App.js');
   const [session, setSession] = useState(null);
 
   useEffect(() => {

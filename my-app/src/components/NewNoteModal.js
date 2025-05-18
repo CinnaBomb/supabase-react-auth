@@ -55,17 +55,17 @@ export default function NewNoteModal({
               dndListeners={{}}
             />
             <Input
-              placeholder="Write something..."
+              placeholder="Write a note..."
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
             />
             <Input
-              placeholder="Currency"
+              placeholder="Monetary reward..."
               value={noteCurrency}
               onChange={(e) => setNoteCurrency(e.target.value)}
             />
             <Input
-              placeholder="Gummy worms, nap..."
+              placeholder="Prize, candy, nap..."
               value={notePrize}
               onChange={(e) => setNotePrize(e.target.value)}
             />

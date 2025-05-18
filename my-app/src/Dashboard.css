@@ -1,3 +1,14 @@
+/* Define color scheme variables at the root */
+:root {
+  --primary-color: #4C9AFF;       /* For buttons, active states, etc. */
+  --secondary-color: #718096;     /* For borders, text (lighter than black) */
+  --accent-color: #E2E8F0;        /* For background accents */
+  --note-bg-color: #FFF176;       /* A soft yellow for note backgrounds */
+  --pin-bg-color: #FF6B6B;        /* A vivid color for pins (or choose different ones) */
+  --text-color: #2D3748;          /* A dark color for text */
+  --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
 /* -----------------------------------
    📌 Pin Styles
 ----------------------------------- */
@@ -9,11 +20,11 @@
 }
 
 .pin-circle {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px var(--shadow-color);
   z-index: 2;
   cursor: pointer;
   position: relative;
@@ -23,16 +34,22 @@
   cursor: grabbing;
 }
 
+.pin-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
 .pin-dropdown {
   list-style: none;
   margin: 0;
   padding: 4px 0;
   background: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--secondary-color);
   border-radius: 6px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px var(--shadow-color);
   position: absolute;
-  z-index: 9999;
+  z-index: 99999 !important;
   min-width: 100px;
   top: var(--pin-dropdown-top, 0);
   left: var(--pin-dropdown-left, 0);
@@ -58,12 +75,26 @@
   cursor: grabbing;
 }
 
-.pin-image,
+/* For plain color pins */
 .pin-color {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   display: block;
+  background: linear-gradient(135deg, var(--pin-bg-color-light) 0%, var(--pin-bg-color) 70%, var(--pin-bg-color-light) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.3), inset 0 -3px 6px rgba(0, 0, 0, 0.4);
+}
+/* For pin images, simply ensure they fill the container */
+.pin-image {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent !important; /* ensure no background color */
+  object-fit: cover;          /* Ensures the image fills the container */
+  object-position: center;    /* Keeps the focus centered */
+  /* transform: scale(2);        Zooms in the image */
 }
 
 .pin-option {
@@ -88,13 +119,14 @@
    🗒️ Note Styles
 ----------------------------------- */
 .sticky-note {
-  background: #fff176; /* soft yellow */
+  background: var(--note-bg-color); /* soft yellow */
   width: 180px;
   min-height: 180px;
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 10px var(--shadow-color);
   font-family: 'Segoe UI', sans-serif;
+  color: var(--text-color);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -127,13 +159,13 @@
 .note-input {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--secondary-color);
   border-radius: 6px;
   font-size: 1rem;
 }
 
 .note-add-button {
-  background-color: #339af0;
+  background-color: var(--primary-color);
   color: white;
   padding: 0.5rem 1rem;
   font-weight: bold;
@@ -144,7 +176,7 @@
 }
 
 .note-add-button:hover {
-  background-color: #1c7ed6;
+  background-color: darken(var(--primary-color), 10%);
 }
 
 /* -----------------------------------
@@ -154,7 +186,7 @@
   position: relative;
   width: 100%;
   height: 1000px; /* or calculate dynamically later */
-  background-color: #f9f9f9;
+  background-color: var(--accent-color);
   background-image: repeating-linear-gradient(
     to right,
     #ddd 0px,

@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
-  Container,
-  Button,
-
-  Box,
-  Text,
-  FormControl,
-  FormLabel,
-  Separator,
-  Input,
-  Flex
+    Container,
+    Button,
+    Box,
+    Text,
+    FormControl,
+    FormLabel,
+    Separator,
+    Input,
+    Flex
 } from '@chakra-ui/react';
 import supabase from './supabase';
 import './Dashboard.css';
@@ -18,11 +17,15 @@ import NotesGrid from './components/NotesGrid';
 import NotesChaos from './components/NotesChaos';
 import NewNoteModal from './components/NewNoteModal';
 import WashiGenerator from './components/WashiGenerator';
+import PinSelector from './components/PinSelector';
+import useChaosLayout from './hooks/useChaosLayout';
+import useGridLayout from './hooks/useGridLayout';
+import useNoteboards from './hooks/useNoteboard';
+import useNotes from './hooks/useNotes';
 
 export default function Dashboard({ session }) {
-  const [noteboards, setNoteboards] = useState([]);
-  const [selectedBoard, setSelectedBoard] = useState(null);
-  const [notes, setNotes] = useState([]);
+  const { noteboards, selectedBoard, setSelectedBoard } = useNoteboards(session);
+  const { notes, setNotes, fetchNotes } = useNotes(selectedBoard);
   const [noteContent, setNoteContent] = useState('');
   const [noteCurrency, setNoteCurrency] = useState('');
   const [notePrize, setNotePrize] = useState('');
@@ -31,6 +34,8 @@ export default function Dashboard({ session }) {
   const [originalGridOrder, setOriginalGridOrder] = useState([]);
   const [gridColumns, setGridColumns] = useState(4);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isWashiOpen, setIsWashiOpen] = useState(false);
+  const [targetNoteId, setTargetNoteId] = useState(null);
 
   function handleGridDragEnd(event) {
     const { active, over } = event;
@@ -43,100 +48,9 @@ export default function Dashboard({ session }) {
     setNotes(newOrder);
   }
 
-  useEffect(() => {
-    if (layoutMode !== 'chaos') return;
-    if (originalGridOrder.length === 0 && notes.length > 0) {
-      setOriginalGridOrder(notes.map((n) => n.id));
-    }
-    const unplacedNotes = notes.filter((n) => n.chaos_x === null || n.chaos_y === null);
-    if (unplacedNotes.length === 0) return;
-    const updatedNotes = [];
-    const spacing = 220;
-    let row = 0;
-    let col = 0;
-    const jittered = unplacedNotes.map((note) => {
-      const baseX = col * spacing + Math.random() * 30 - 15;
-      const baseY = row * spacing + Math.random() * 30 - 15;
-      col++;
-      if (col >= 3) {
-        col = 0;
-        row++;
-      }
-      updatedNotes.push({ id: note.id, chaos_x: baseX, chaos_y: baseY });
-      return { ...note, chaos_x: baseX, chaos_y: baseY };
-    });
-    setNotes((prev) =>
-      prev.map((note) => {
-        const found = updatedNotes.find((u) => u.id === note.id);
-        return found ? { ...note, ...found } : note;
-      })
-    );
-    updatedNotes.forEach(({ id, chaos_x, chaos_y }) => {
-      supabase.from('notes').update({ chaos_x, chaos_y }).eq('id', id);
-    });
-  }, [layoutMode]);
-
-  useEffect(() => {
-    if (layoutMode !== 'grid' || originalGridOrder.length === 0) return;
-    const sortedNotes = [...notes].sort(
-      (a, b) => originalGridOrder.indexOf(a.id) - originalGridOrder.indexOf(b.id)
-    );
-    setNotes(sortedNotes);
-    setOriginalGridOrder([]);
-  }, [layoutMode, notes, originalGridOrder]);
-
-  function updateNotePin(noteId, newPin) {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id === noteId ? { ...note, pin_type: newPin } : note
-      )
-    );
-  }
-
-  useEffect(() => {
-    async function fetchNoteboards() {
-      if (!session?.user?.id) return;
-      const { data, error } = await supabase
-        .from('noteboards')
-        .select('*')
-        .eq('user_id', session.user.id);
-      if (error) return console.error(error);
-      if (!data || data.length === 0) {
-        const { data: newBoard } = await supabase
-          .from('noteboards')
-          .insert([{ user_id: session.user.id, title: 'Dashboard' }])
-          .select();
-        setNoteboards(newBoard);
-        setSelectedBoard(newBoard[0].id);
-      } else {
-        setNoteboards(data);
-        setSelectedBoard(data[0].id);
-      }
-    }
-    fetchNoteboards();
-  }, [session]);
-
-  useEffect(() => {
-    if (selectedBoard) fetchNotes(selectedBoard);
-  }, [selectedBoard]);
-
-  async function fetchNotes(boardId) {
-    const { data } = await supabase
-      .from('notes')
-      .select('*')
-      .eq('noteboard_id', boardId)
-      .order('grid_index', { ascending: true });
-    if (data) {
-      setNotes(
-        data.map((n, i) => ({
-          ...n,
-          grid_index: n.grid_index ?? i,
-          chaos_x: n.chaos_x ?? null,
-          chaos_y: n.chaos_y ?? null,
-        }))
-      );
-    }
-  }
+  // Use custom hooks for layout effects.
+  useChaosLayout({ layoutMode, notes, setNotes, originalGridOrder, setOriginalGridOrder });
+  useGridLayout({ layoutMode, notes, setNotes, originalGridOrder, setOriginalGridOrder });
 
   async function handleCreateNote() {
     if (!noteContent || !selectedBoard) return;
@@ -153,7 +67,10 @@ export default function Dashboard({ session }) {
         prize: notePrize || null,
         grid_index: count ?? 0,
       });
-    if (error) return console.error("Insert error:", error);
+    if (error) {
+      console.error("Insert error:", error);
+      return;
+    }
     setNoteContent('');
     setNoteCurrency('');
     setNotePrize('');
@@ -167,6 +84,29 @@ export default function Dashboard({ session }) {
     );
     await supabase.from('notes').update({ chaos_x: x, chaos_y: y }).eq('id', noteId);
   }
+
+  function updateNotePin(noteId, newPin) {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === noteId ? { ...note, pin_type: newPin } : note
+      )
+    );
+  }
+
+  const openWashiGenerator = (noteId) => {
+    setTargetNoteId(noteId);
+    setIsWashiOpen(true);
+  };
+
+  const closeWashiGenerator = () => {
+    setIsWashiOpen(false);
+    setTargetNoteId(null);
+  };
+
+  const handleWashiCompleted = (generatedPattern) => {
+    // Update the note's pin with the generated washi tape
+    updateNotePin(targetNoteId, generatedPattern);
+  };
 
   return (
     <Container maxW="container.md" py={10}>
@@ -239,7 +179,6 @@ export default function Dashboard({ session }) {
 
       <Box textAlign="center" my={4}>
         <Text fontWeight="bold" fontSize="lg">Notes</Text>
-        {/* <Separator my={4} /> */}
       </Box>
 
       {layoutMode === 'grid' ? (
@@ -274,6 +213,18 @@ export default function Dashboard({ session }) {
         setNotePrize={setNotePrize}
         handleCreateNote={handleCreateNote}
       />
+
+      <PinSelector
+        noteId={targetNoteId}
+        openWashiGenerator={openWashiGenerator}
+      />
+
+      {isWashiOpen && (
+        <WashiGenerator
+          onCompleted={handleWashiCompleted}
+          onClose={closeWashiGenerator}
+        />
+      )}
     </Container>
   );
 }

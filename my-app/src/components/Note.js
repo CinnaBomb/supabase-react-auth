@@ -13,11 +13,7 @@ export default function Note({
   dndAttributes,
   dndListeners,
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-  } = useDraggable({ id: note.id });
+  const { attributes, listeners, setNodeRef } = useDraggable({ id: note.id });
 
   const activeAttributes = dndAttributes ?? attributes;
   const activeListeners = dndListeners ?? listeners;
@@ -36,6 +32,9 @@ export default function Note({
         isPinMenuOpen={isPinMenuOpen}
         openPinMenuFor={openPinMenuFor}
         closePinMenu={closePinMenu}
+        // Pass drag listeners to the pin so it can be dragged directly
+        dragListeners={draggable ? activeListeners : {}}
+        dragAttributes={draggable ? activeAttributes : {}}
       />
 
       <div
@@ -48,7 +47,6 @@ export default function Note({
           {note.prize && ` 🎁 ${note.prize}`}
         </div>
       </div>
-
     </div>
   );
 }
